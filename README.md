@@ -17,3 +17,15 @@ A responsive web application built with React, TypeScript and Vite that allows u
 - **Language:** TypeScript
 - **Styling:** Modular CSS
 - **API:** Open Library Search API
+
+## 📁 Project Structure
+
+src/
+├── components/       # Reusable presentational UI components (BookCard, BookGrid, SearchBar, Header)
+├── services/         # API integration layer and transformation utilities (openLibrary.ts)
+├── types.ts          # Centralized TypeScript interfaces
+├── App.tsx           # Primary state management and view container
+└── main.tsx          # Application entry point
+
+## 📝 Prompting & Refactoring Documentation
+All AI prompts, iterations, manual code refactoring, and debug logs are documented step-by-step in PROMPTS.md.
