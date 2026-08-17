@@ -2,7 +2,8 @@ import type { Book, OpenLibraryDoc, OpenLibraryResponse } from '../types';
 
 export async function searchBooks(query: string): Promise<Book[]> {
   try {
-    const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`);
+    const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20&fields=key,title,author_name,first_publish_year,cover_i,subject`);
+    //const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch books: ${response.statusText}`);
     }

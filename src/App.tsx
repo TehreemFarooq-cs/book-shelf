@@ -1,22 +1,42 @@
+import { useState } from 'react';
 import './App.css';
 import './components/Components.css';
 import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
 import { BookGrid } from './components/BookGrid';
+import { searchBooks } from './services/openLibrary';
 import type { Book } from './types';
 
-const placeholderBooks: Book[] = [
-  { id: '1', title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', year: 1925, status: 'read' },
-  { id: '2', title: '1984', author: 'George Orwell', year: 1949, status: 'unread' },
-];
-
 function App() {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSearch = async (query: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const results = await searchBooks(query);
+      setBooks(results);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      setBooks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClear = () => {
+    setBooks([]);
+    setError(null);
+  };
+
   return (
     <>
       <Header />
       <main>
-        <SearchBar onSearch={(q) => console.log('Searching for:', q)} onClear={() => console.log('Cleared')} />
-        <BookGrid books={placeholderBooks} />
+        <SearchBar onSearch={handleSearch} onClear={handleClear} />
+        <BookGrid books={books} loading={loading} error={error} />
       </main>
     </>
   );
