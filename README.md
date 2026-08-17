@@ -20,6 +20,7 @@ A responsive web application built with React, TypeScript and Vite that allows u
 
 ## 📁 Project Structure
 
+```text
 src/
 ├── components/       # Reusable presentational UI components (BookCard, BookGrid, SearchBar, Header)
 ├── services/         # API integration layer and transformation utilities (openLibrary.ts)
