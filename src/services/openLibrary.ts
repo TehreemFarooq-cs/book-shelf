@@ -25,6 +25,6 @@ function transformToBook(doc: OpenLibraryDoc): Book {
     subject: doc.subject,
     coverUrl: doc.cover_i
       ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
-      : '/placeholder-book.svg',
+      : 'https://placehold.co/128x192?text=No+Cover',
   };
 }
