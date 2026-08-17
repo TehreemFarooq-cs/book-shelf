@@ -27,6 +27,7 @@ src/
 ├── types.ts          # Centralized TypeScript interfaces
 ├── App.tsx           # Primary state management and view container
 └── main.tsx          # Application entry point
+```
 
 ## 📝 Prompting & Refactoring Documentation
-All AI prompts, iterations, manual code refactoring, and debug logs are documented step-by-step in PROMPTS.md.
+All AI prompts, iterations, and manual code refactoring logs are documented in [`PROMPTS.md`](./PROMPTS.md).
