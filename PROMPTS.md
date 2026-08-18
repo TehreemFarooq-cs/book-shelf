@@ -141,3 +141,17 @@ Perform a code audit across the codebase to resolve dead code, state duplication
 * **Strict Type Sanitization:** Removed deprecated `status` properties from `types.ts` and `openLibrary.ts` to resolve `TS2353` strict compiler warnings.
 * **Clean Build Verification:** Cleaned up unused CSS artifacts (`src/App.css`), removed orphan JSX blocks, and verified zero type or lint errors with `npm run build`.
 * **UX Context Awareness:** Updated `BookGrid.tsx` with an `activeTab` prop to distinguish between empty search results on "Home" vs. an empty shelf on "My Books".
+
+---
+
+## Prompt 6: Note-Taking Feature with Modal and Card Icon
+
+Implement a per-book note-taking feature allowing users to record reflections, quotes, and thoughts via a modal dialog and a clean card action icon.
+
+### AI Output
+> **Note-Taking Feature Implemented:**
+> 
+> Added the `notes` property to `Book`, updated `BookCard` with a note-taking icon button and inline preview, created a modal component in `App.tsx`, and styled the components in `Components.css`.
+
+### Manual Improvements & Refactoring
+* **UI Polish:** Verified clean alignment of the pencil icon button alongside bookmark actions and ensured responsive textarea scaling inside the modal popup.
