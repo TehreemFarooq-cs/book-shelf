@@ -9,6 +9,7 @@ interface BookGridProps {
   onToggleSave: (book: Book) => void;
   onUpdateStatus?: (id: string, status: ReadingStatus) => void;
   onUpdatePages?: (id: string, pagesRead: number) => void;
+  onOpenNotes?: (book: Book) => void;
 }
 
 export const BookGrid = ({
@@ -19,6 +20,7 @@ export const BookGrid = ({
   onToggleSave,
   onUpdateStatus,
   onUpdatePages,
+  onOpenNotes,
 }: BookGridProps) => {
   if (loading) {
     return <div className="grid-state-message">Loading books...</div>;
@@ -48,6 +50,7 @@ export const BookGrid = ({
           onToggleSave={onToggleSave}
           onUpdateStatus={onUpdateStatus}
           onUpdatePages={onUpdatePages}
+          onOpenNotes={onOpenNotes}
         />
       ))}
     </div>

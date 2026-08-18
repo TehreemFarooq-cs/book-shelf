@@ -10,6 +10,7 @@ export interface Book {
   readingStatus?: ReadingStatus;
   pagesRead?: number;
   totalPages?: number;
+  notes?: string; // Added for personal notes
 }
 
 export interface OpenLibraryDoc {

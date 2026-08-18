@@ -6,6 +6,7 @@ interface BookCardProps {
   onToggleSave: (book: Book) => void;
   onUpdateStatus?: (id: string, status: ReadingStatus) => void;
   onUpdatePages?: (id: string, pagesRead: number) => void;
+  onOpenNotes?: (book: Book) => void;
 }
 
 export const BookCard = ({
@@ -14,6 +15,7 @@ export const BookCard = ({
   onToggleSave,
   onUpdateStatus,
   onUpdatePages,
+  onOpenNotes,
 }: BookCardProps) => {
   const isSaved = Boolean(book.readingStatus);
   const totalPages = book.totalPages || 300;
@@ -30,14 +32,27 @@ export const BookCard = ({
           <div className="badge-icon">📖</div>
           <span className="badge-label">BOOK</span>
         </div>
-        <button
-          type="button"
-          className={`bookmark-btn ${isSaved ? 'active' : ''}`}
-          onClick={() => onToggleSave(book)}
-          title={isSaved ? 'Remove from shelf' : 'Save to shelf'}
-        >
-          {isSaved ? '★ Saved' : '☆ Save'}
-        </button>
+        <div className="card-top-actions">
+          {/* Note button available on saved books in My Books */}
+          {isSaved && activeTab === 'my-books' && (
+            <button
+              type="button"
+              className={`note-icon-btn ${book.notes ? 'has-notes' : ''}`}
+              onClick={() => onOpenNotes?.(book)}
+              title={book.notes ? 'Edit notes' : 'Add notes'}
+            >
+              📝
+            </button>
+          )}
+          <button
+            type="button"
+            className={`bookmark-btn ${isSaved ? 'active' : ''}`}
+            onClick={() => onToggleSave(book)}
+            title={isSaved ? 'Remove from shelf' : 'Save to shelf'}
+          >
+            {isSaved ? '★ Saved' : '☆ Save'}
+          </button>
+        </div>
       </div>
 
       <img src={book.coverUrl} alt={book.title} loading="lazy" />
@@ -84,6 +99,13 @@ export const BookCard = ({
                 />
                 <span className="pages-total">/ {totalPages} pages ({progressPercent}%)</span>
               </div>
+            </div>
+          )}
+
+          {book.notes && (
+            <div className="card-notes-preview" onClick={() => onOpenNotes?.(book)}>
+              <span className="notes-preview-label">Notes:</span>
+              <p>{book.notes}</p>
             </div>
           )}
 

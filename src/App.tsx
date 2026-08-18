@@ -22,6 +22,10 @@ function App() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('title');
 
+  // Modal notes state
+  const [modalBook, setModalBook] = useState<Book | null>(null);
+  const [noteText, setNoteText] = useState('');
+
   useEffect(() => {
     localStorage.setItem('bookshelf_saved', JSON.stringify(savedBooks));
   }, [savedBooks]);
@@ -87,6 +91,7 @@ function App() {
         readingStatus: 'want-to-read',
         pagesRead: 0,
         totalPages: bookToToggle.totalPages || 300,
+        notes: '',
       };
       setSavedBooks((prev) => [...prev, defaultSavedBook]);
     }
@@ -106,6 +111,19 @@ function App() {
         return { ...b, pagesRead: validPages };
       })
     );
+  };
+
+  const handleOpenNotes = (book: Book) => {
+    setModalBook(book);
+    setNoteText(book.notes || '');
+  };
+
+  const handleSaveNotes = () => {
+    if (!modalBook) return;
+    setSavedBooks((prev) =>
+      prev.map((b) => (b.id === modalBook.id ? { ...b, notes: noteText } : b))
+    );
+    setModalBook(null);
   };
 
   return (
@@ -204,8 +222,41 @@ function App() {
           onToggleSave={handleToggleSave}
           onUpdateStatus={handleUpdateStatus}
           onUpdatePages={handleUpdatePages}
+          onOpenNotes={handleOpenNotes}
         />
       </main>
+
+      {/* Notes Modal Popup */}
+      {modalBook && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Notes for {modalBook.title}</h3>
+            <textarea
+              className="notes-textarea"
+              placeholder="Write your thoughts, favorite quotes, or chapter reflections here..."
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              rows={6}
+            />
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="modal-btn cancel"
+                onClick={() => setModalBook(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="modal-btn save"
+                onClick={handleSaveNotes}
+              >
+                Save Notes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
