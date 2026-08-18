@@ -2,6 +2,9 @@
 
 A responsive web application built with React, TypeScript and Vite that allows users to search for books in real time using the Open Library Search API.
 
+## 🚀 Live Demo
+* **URL:** [https://book-shelf-inky-chi.vercel.app/](https://book-shelf-inky-chi.vercel.app/)
+
 ## 🚀 Features
 
 - **Live Book Search:** Query millions of titles from the Open Library API.
