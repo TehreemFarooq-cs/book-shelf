@@ -5,17 +5,18 @@ interface BookGridProps {
   books: Book[];
   loading: boolean;
   error: string | null;
+  onToggleSave: (book: Book) => void;
 }
 
-export const BookGrid = ({ books, loading, error }: BookGridProps) => {
-  if (loading) return <div className="book-grid">Loading...</div>;
-  if (error) return <div className="book-grid error">{error}</div>;
-  if (books.length === 0) return <div className="book-grid">Search for a title to get started</div>;
+export const BookGrid = ({ books, loading, error, onToggleSave }: BookGridProps) => {
+  if (loading) return <p>Loading books...</p>;
+  if (error) return <p className="error">{error}</p>;
+  if (books.length === 0) return <p>No books found.</p>;
 
   return (
     <div className="book-grid">
       {books.map((book) => (
-        <BookCard key={book.id} book={book} />
+        <BookCard key={book.id} book={book} onToggleSave={onToggleSave} />
       ))}
     </div>
   );

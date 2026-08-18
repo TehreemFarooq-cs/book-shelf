@@ -9,6 +9,8 @@ import type { Book } from './types';
 
 function App() {
   const [books, setBooks] = useState<Book[]>([]);
+  const [savedBooks, setSavedBooks] = useState<Book[]>([]);
+  const [activeTab, setActiveTab] = useState<'home' | 'my-books'>('home');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +19,12 @@ function App() {
     setError(null);
     try {
       const results = await searchBooks(query);
-      setBooks(results);
+      const savedIds = new Set(savedBooks.map((b) => b.id));
+      const syncedResults = results.map((book) => ({
+        ...book,
+        status: savedIds.has(book.id) ? ('read' as const) : ('unread' as const),
+      }));
+      setBooks(syncedResults);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
       setBooks([]);
@@ -31,14 +38,59 @@ function App() {
     setError(null);
   };
 
+  const handleToggleSave = (bookToToggle: Book) => {
+    const isSaved = savedBooks.some((b) => b.id === bookToToggle.id);
+
+    if (isSaved) {
+      setSavedBooks((prev) => prev.filter((b) => b.id !== bookToToggle.id));
+    } else {
+      setSavedBooks((prev) => [...prev, { ...bookToToggle, status: 'read' }]);
+    }
+
+    setBooks((prevBooks) =>
+      prevBooks.map((b) =>
+        b.id === bookToToggle.id
+          ? { ...b, status: b.status === 'read' ? 'unread' : 'read' }
+          : b
+      )
+    );
+  };
+
+  const displayedBooks = activeTab === 'my-books' ? savedBooks : books;
+
   return (
     <>
-      <Header />
+      <Header
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        savedCount={savedBooks.length}
+      />
       <main>
-        <span className="hero-tag">THE LIBRARY</span>
-        <h2 className="hero-headline">Every book you need.<br />One simple shelf.</h2>
-        <SearchBar onSearch={handleSearch} onClear={handleClear} />
-        <BookGrid books={books} loading={loading} error={error} />
+        <span className="hero-tag">
+          {activeTab === 'home' ? 'THE LIBRARY' : 'YOUR COLLECTION'}
+        </span>
+        <h2 className="hero-headline">
+          {activeTab === 'home' ? (
+            <>
+              Every book you need.
+              <br />
+              One simple shelf.
+            </>
+          ) : (
+            'Your saved books.'
+          )}
+        </h2>
+
+        {activeTab === 'home' && (
+          <SearchBar onSearch={handleSearch} onClear={handleClear} />
+        )}
+
+        <BookGrid
+          books={displayedBooks}
+          loading={activeTab === 'home' ? loading : false}
+          error={activeTab === 'home' ? error : null}
+          onToggleSave={handleToggleSave}
+        />
       </main>
     </>
   );

@@ -268,3 +268,91 @@ main {
   color: var(--text-muted);
   border: 1px solid var(--border);
 }
+
+/* Header Counter Badge */
+.nav-counter-badge {
+  margin-left: 0.5rem;
+  background-color: var(--text-main);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.15rem 0.55rem;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn-primary .nav-counter-badge {
+  background-color: #ffffff;
+  color: var(--text-main);
+}
+
+/* Card Top Bar & Star Bookmark */
+.card-top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.bookmark-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.15s ease;
+}
+
+.bookmark-btn.active {
+  background-color: #fef08a;
+  border-color: #eab308;
+  color: #854d0e;
+}
+
+.bookmark-btn:hover {
+  border-color: var(--text-main);
+}
+
+/* Book Action Buttons */
+.card-footer-actions {
+  width: 100%;
+  margin-top: auto;
+}
+
+.book-action-btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.15s ease;
+}
+
+.book-action-btn.add {
+  background-color: #ffffff;
+  color: var(--text-main);
+  border-color: var(--border);
+}
+
+.book-action-btn.add:hover {
+  background-color: var(--accent-green);
+  border-color: transparent;
+}
+
+.book-action-btn.remove {
+  background-color: #fff1f2;
+  color: #e11d48;
+  border-color: #fecdd3;
+}
+
+.book-action-btn.remove:hover {
+  background-color: #ffe4e6;
+}
