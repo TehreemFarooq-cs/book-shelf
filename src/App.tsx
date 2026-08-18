@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import './App.css';
+import { useState, useEffect, useMemo } from 'react';
 import './components/Components.css';
 import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
@@ -8,9 +7,8 @@ import { searchBooks } from './services/openLibrary';
 import type { Book, ReadingStatus } from './types';
 
 function App() {
-  const [books, setBooks] = useState<Book[]>([]);
-  
-  // Initialize savedBooks from localStorage
+  const [searchResults, setSearchResults] = useState<Book[]>([]);
+
   const [savedBooks, setSavedBooks] = useState<Book[]>(() => {
     const localData = localStorage.getItem('bookshelf_saved');
     return localData ? JSON.parse(localData) : [];
@@ -20,34 +18,33 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Sync savedBooks state to localStorage on update
   useEffect(() => {
     localStorage.setItem('bookshelf_saved', JSON.stringify(savedBooks));
   }, [savedBooks]);
+
+  const displayedBooks = useMemo(() => {
+    if (activeTab === 'my-books') return savedBooks;
+
+    const savedMap = new Map(savedBooks.map((b) => [b.id, b]));
+    return searchResults.map((book) => savedMap.get(book.id) || book);
+  }, [activeTab, savedBooks, searchResults]);
 
   const handleSearch = async (query: string) => {
     setLoading(true);
     setError(null);
     try {
       const results = await searchBooks(query);
-      const savedMap = new Map(savedBooks.map((b) => [b.id, b]));
-      
-      const syncedResults = results.map((book) => {
-        const savedMatch = savedMap.get(book.id);
-        return savedMatch ? { ...savedMatch } : book;
-      });
-
-      setBooks(syncedResults);
+      setSearchResults(results);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      setBooks([]);
+      setSearchResults([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleClear = () => {
-    setBooks([]);
+    setSearchResults([]);
     setError(null);
   };
 
@@ -56,9 +53,6 @@ function App() {
 
     if (isSaved) {
       setSavedBooks((prev) => prev.filter((b) => b.id !== bookToToggle.id));
-      setBooks((prev) =>
-        prev.map((b) => (b.id === bookToToggle.id ? { ...b, readingStatus: undefined } : b))
-      );
     } else {
       const defaultSavedBook: Book = {
         ...bookToToggle,
@@ -67,57 +61,24 @@ function App() {
         totalPages: bookToToggle.totalPages || 300,
       };
       setSavedBooks((prev) => [...prev, defaultSavedBook]);
-      setBooks((prev) =>
-        prev.map((b) => (b.id === bookToToggle.id ? defaultSavedBook : b))
-      );
     }
   };
 
   const handleUpdateStatus = (id: string, status: ReadingStatus) => {
-    const updater = (b: Book) =>
-      b.id === id ? { ...b, readingStatus: status } : b;
-
-    setSavedBooks((prev) => prev.map(updater));
-    setBooks((prev) => prev.map(updater));
+    setSavedBooks((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, readingStatus: status } : b))
+    );
   };
 
   const handleUpdatePages = (id: string, pagesRead: number) => {
-    const updater = (b: Book) => {
-      if (b.id !== id) return b;
-      const validPages = Math.min(Math.max(0, pagesRead), b.totalPages || 300);
-      return { ...b, pagesRead: validPages };
-    };
-
-    setSavedBooks((prev) => prev.map(updater));
-    setBooks((prev) => prev.map(updater));
+    setSavedBooks((prev) =>
+      prev.map((b) => {
+        if (b.id !== id) return b;
+        const validPages = Math.min(Math.max(0, pagesRead), b.totalPages || 300);
+        return { ...b, pagesRead: validPages };
+      })
+    );
   };
-{activeTab === 'my-books' && (
-  <div className="stats-dashboard">
-    <div className="stat-card">
-      <span className="stat-value">{savedBooks.length}</span>
-      <span className="stat-label">Total Books</span>
-    </div>
-    <div className="stat-card">
-      <span className="stat-value">
-        {savedBooks.filter((b) => b.readingStatus === 'currently-reading').length}
-      </span>
-      <span className="stat-label">Currently Reading</span>
-    </div>
-    <div className="stat-card">
-      <span className="stat-value">
-        {savedBooks.filter((b) => b.readingStatus === 'finished').length}
-      </span>
-      <span className="stat-label">Finished</span>
-    </div>
-    <div className="stat-card">
-      <span className="stat-value">
-        {savedBooks.reduce((acc, b) => acc + (b.pagesRead || 0), 0)}
-      </span>
-      <span className="stat-label">Pages Read</span>
-    </div>
-  </div>
-)}
-  const displayedBooks = activeTab === 'my-books' ? savedBooks : books;
 
   return (
     <>
@@ -127,63 +88,62 @@ function App() {
         savedCount={savedBooks.length}
       />
       <main>
-  <span className="hero-tag">
-    {activeTab === 'home' ? 'THE LIBRARY' : 'YOUR COLLECTION'}
-  </span>
-  <h2 className="hero-headline">
-    {activeTab === 'home' ? (
-      <>
-        Every book you need.
-        <br />
-        One simple shelf.
-      </>
-    ) : (
-      'Your saved books.'
-    )}
-  </h2>
-
-  {/* Search bar on Home tab */}
-  {activeTab === 'home' && (
-    <SearchBar onSearch={handleSearch} onClear={handleClear} />
-  )}
-
-  {/* Stats Dashboard on My Books tab */}
-  {activeTab === 'my-books' && (
-    <div className="stats-dashboard">
-      <div className="stat-card">
-        <span className="stat-value">{savedBooks.length}</span>
-        <span className="stat-label">Total Books</span>
-      </div>
-      <div className="stat-card">
-        <span className="stat-value">
-          {savedBooks.filter((b) => b.readingStatus === 'currently-reading').length}
+        <span className="hero-tag">
+          {activeTab === 'home' ? 'THE LIBRARY' : 'YOUR COLLECTION'}
         </span>
-        <span className="stat-label">Currently Reading</span>
-      </div>
-      <div className="stat-card">
-        <span className="stat-value">
-          {savedBooks.filter((b) => b.readingStatus === 'finished').length}
-        </span>
-        <span className="stat-label">Finished</span>
-      </div>
-      <div className="stat-card">
-        <span className="stat-value">
-          {savedBooks.reduce((acc, b) => acc + (b.pagesRead || 0), 0)}
-        </span>
-        <span className="stat-label">Pages Read</span>
-      </div>
-    </div>
-  )}
+        <h2 className="hero-headline">
+          {activeTab === 'home' ? (
+            <>
+              Every book you need.
+              <br />
+              One simple shelf.
+            </>
+          ) : (
+            'Your saved books.'
+          )}
+        </h2>
 
-  <BookGrid
-    books={displayedBooks}
-    loading={activeTab === 'home' ? loading : false}
-    error={activeTab === 'home' ? error : null}
-    onToggleSave={handleToggleSave}
-    onUpdateStatus={handleUpdateStatus}
-    onUpdatePages={handleUpdatePages}
-  />
-</main>
+        {activeTab === 'home' && (
+          <SearchBar onSearch={handleSearch} onClear={handleClear} />
+        )}
+
+        {activeTab === 'my-books' && (
+          <div className="stats-dashboard">
+            <div className="stat-card">
+              <span className="stat-value">{savedBooks.length}</span>
+              <span className="stat-label">Total Books</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-value">
+                {savedBooks.filter((b) => b.readingStatus === 'currently-reading').length}
+              </span>
+              <span className="stat-label">Currently Reading</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-value">
+                {savedBooks.filter((b) => b.readingStatus === 'finished').length}
+              </span>
+              <span className="stat-label">Finished</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-value">
+                {savedBooks.reduce((acc, b) => acc + (b.pagesRead || 0), 0)}
+              </span>
+              <span className="stat-label">Pages Read</span>
+            </div>
+          </div>
+        )}
+
+        <BookGrid
+          books={displayedBooks}
+          loading={activeTab === 'home' ? loading : false}
+          error={activeTab === 'home' ? error : null}
+          activeTab={activeTab}
+          onToggleSave={handleToggleSave}
+          onUpdateStatus={handleUpdateStatus}
+          onUpdatePages={handleUpdatePages}
+        />
+      </main>
     </>
   );
 }

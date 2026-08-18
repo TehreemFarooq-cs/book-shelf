@@ -6,7 +6,7 @@ export interface Book {
   author: string;
   year: number;
   coverUrl: string;
-  status?: 'read' | 'unread';
+  cover_i?: number;
   readingStatus?: ReadingStatus;
   pagesRead?: number;
   totalPages?: number;
