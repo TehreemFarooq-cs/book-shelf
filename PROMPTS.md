@@ -10,7 +10,7 @@ This document provides a detailed log of AI-generated prompts, iterative develop
 
 ### How AI Assistance Was Utilized:
 * **Rapid Feature Scaffolding & Boilerplate:** Accelerated development by quickly generating initial component structures, service layers, and styling layouts.
-* **API Integration & Error Traceability:** Assisted in configuring external API calls, managing payload limits, setting up network request abort timeouts, and refining error handling patterns (such as attaching native error causes).
+* **API Integration & Error Traceability:** Assisted in configuring external API calls, managing payload limits, setting up network request abort timeouts and refining error handling patterns (such as attaching native error causes).
 * **Architectural Recommendations & Refactoring:** Identified component complexity and anti-patterns (such as prop drilling and "God components"), proposing and implementing state centralization through custom React Context (`BooksContext`).
 
 ---
@@ -22,7 +22,7 @@ Initialize a clean baseline layout for a virtual bookshelf application using fun
 Create the following files in `src/components/`:
 1. `Header.tsx`: Displays the app title "BookShelf" and a subtitle/navigation layout.
 2. `SearchBar.tsx`: Renders a form input for book titles/authors with a submit button and clear button.
-3. `BookCard.tsx`: Displays placeholder book details (title, author, publish year, and shelf status badge).
+3. `BookCard.tsx`: Displays placeholder book details (title, author, publish year and shelf status badge).
 4. `BookGrid.tsx`: Renders a responsive grid containing multiple BookCard placeholders.
 
 Requirements:
@@ -88,14 +88,14 @@ Requirements:
 
 ## Prompt 3: Connecting Search State to the UI
 
-Wire up the search functionality using the `searchBooks` service across `src/App.tsx`, `src/components/SearchBar.tsx`, `src/components/BookCard.tsx`, and `src/components/BookGrid.tsx`.
+Wire up the search functionality using the `searchBooks` service across `src/App.tsx`, `src/components/SearchBar.tsx`, `src/components/BookCard.tsx` and `src/components/BookGrid.tsx`.
 
 Requirements:
 1. Update `SearchBar.tsx` to manage local input state and call an `onSearch(query: string)` callback prop on form submission. Add an `onClear` handler to reset search input.
 2. In `App.tsx`, maintain state for `books` (`Book[]`), `loading` (`boolean`), and `error` (`string | null`).
-3. Implement `handleSearch(query: string)` in `App.tsx` to set loading status, call `searchBooks(query)`, update the `books` array, and handle error messages cleanly.
-4. Update `BookCard.tsx` to render `book.coverUrl` as an `<img>` tag alongside title, author, publish year, and status badge.
-5. Update `BookGrid.tsx` to handle empty states (e.g., "No books found" or "Search for a title to get started"), loading indicators, and display error messages if API requests fail.
+3. Implement `handleSearch(query: string)` in `App.tsx` to set loading status, call `searchBooks(query)`, update the `books` array and handle error messages cleanly.
+4. Update `BookCard.tsx` to render `book.coverUrl` as an `<img>` tag alongside title, author, publish year and status badge.
+5. Update `BookGrid.tsx` to handle empty states (e.g., "No books found" or "Search for a title to get started"), loading indicators and display error messages if API requests fail.
 
 ### AI Output
 > **Finalizing Implementation:**
@@ -104,7 +104,7 @@ Requirements:
 > 1. `src/components/SearchBar.tsx`: Updated to manage input state using `useState` and invoke `onSearch` and `onClear` callbacks appropriately.
 > 2. `src/App.tsx`: Implemented `books`, `loading`, and `error` state. Implemented `handleSearch` to fetch data using `searchBooks` and handle UI states.
 > 3. `src/components/BookCard.tsx`: Updated to render the `book.coverUrl` image.
-> 4. `src/components/BookGrid.tsx`: Updated to handle and display loading, error, and empty states.
+> 4. `src/components/BookGrid.tsx`: Updated to handle and display loading, error and empty states.
 
 ### Manual Improvements & Refactoring
 * **Issue (API Request Timeout & Payload Bloat):** Unfiltered Open Library queries caused `net::ERR_CONNECTION_TIMED_OUT` and `TypeError: Failed to fetch` due to massive payload sizes.
@@ -118,17 +118,17 @@ Requirements:
 
 ## Prompt 4: Reading Status Pipeline, Progress Tracking & Stats Dashboard
 
-Implement reading lifecycle management (`Want to Read`, `Currently Reading`, `Finished`), active page progress tracking, `localStorage` persistence, and a real-time metrics dashboard on the "My Books" tab.
+Implement reading lifecycle management (`Want to Read`, `Currently Reading`, `Finished`), active page progress tracking, `localStorage` persistence and a real-time metrics dashboard on the "My Books" tab.
 
 Requirements:
 1. Allow users to save books from search results to a personal shelf stored in `localStorage`.
 2. Add status dropdowns and page count controls on individual book cards.
-3. Render a real-time statistics panel showing Total Books, Currently Reading, Finished, and Total Pages Read.
+3. Render a real-time statistics panel showing Total Books, Currently Reading, Finished and Total Pages Read.
 
 ### AI Output
 > **Initial Feature Scaffolding Completed:**
 > 
-> Provided initial boilerplate code for tracking reading lifecycle states, page inputs, `localStorage` persistence handlers, and the basic HTML layout for the dashboard summary panel.
+> Provided initial boilerplate code for tracking reading lifecycle states, page inputs, `localStorage` persistence handlers and the basic HTML layout for the dashboard summary panel.
 
 ### Manual Improvements & Refactoring
 * **Layout & CSS Overlap Fix:** Corrected layout collision in `Components.css` where fixed header elements overlapped `<main>` content containers. Adjusted padding resets and centered empty search states along the primary flex axis.
@@ -138,7 +138,7 @@ Requirements:
 
 ## Prompt 5: Code Audit, Derived State Architecture & Build Cleanup
 
-Perform a code audit across the codebase to resolve dead code, state duplication bugs, unused type definitions, and compiler warnings in preparation for production build.
+Perform a code audit across the codebase to resolve dead code, state duplication bugs, unused type definitions and compiler warnings in preparation for production build.
 
 ### AI Output
 > **Static Analysis & Code Audit Summary:**
@@ -150,22 +150,22 @@ Perform a code audit across the codebase to resolve dead code, state duplication
   * **Problem:** AI's initial approach maintained two separate arrays (`books` for search results and `savedBooks` for saved items) and tried to sync updates back and forth, leading to stale state bugs across tab switches.
   * **Solution:** Rearchitected `App.tsx` so `savedBooks` (persisted in `localStorage`) acts as the single source of truth. Used `useMemo` to dynamically compute and merge saved status and progress into active search results on every render.
 * **Strict Type Sanitization:** Removed deprecated `status` properties from `types.ts` and `openLibrary.ts` to resolve `TS2353` strict compiler warnings.
-* **Clean Build Verification:** Cleaned up unused CSS artifacts (`src/App.css`), removed orphan JSX blocks, and verified zero type or lint errors with `npm run build`.
+* **Clean Build Verification:** Cleaned up unused CSS artifacts (`src/App.css`), removed orphan JSX blocks and verified zero type or lint errors with `npm run build`.
 * **UX Context Awareness:** Updated `BookGrid.tsx` with an `activeTab` prop to distinguish between empty search results on "Home" vs. an empty shelf on "My Books".
 
 ---
 
 ## Prompt 6: Note-Taking Feature with Modal and Card Icon
 
-Implement a per-book note-taking feature allowing users to record reflections, quotes, and thoughts via a modal dialog and a clean card action icon.
+Implement a per-book note-taking feature allowing users to record reflections, quotes and thoughts via a modal dialog and a clean card action icon.
 
 ### AI Output
 > **Note-Taking Feature Implemented:**
 > 
-> Added the `notes` property to `Book`, updated `BookCard` with a note-taking icon button and inline preview, created a modal component in `App.tsx`, and styled the components in `Components.css`.
+> Added the `notes` property to `Book`, updated `BookCard` with a note-taking icon button and inline preview, created a modal component in `App.tsx` and styled the components in `Components.css`.
 
 ### Manual Improvements & Refactoring
-* **UI Polish:** Verified clean alignment of the pencil icon button alongside bookmark actions and ensured responsive textarea scaling inside the modal popup.
+* **UI Polish:** Verified clean alignment of the notes icon button alongside bookmark actions and ensured responsive textarea scaling inside the modal popup.
 
 ---
 
@@ -176,7 +176,15 @@ Refactor the application architecture to eliminate prop drilling by introducing 
 ### AI Output
 > **Refactoring Complete:**
 > 
-> Established `BooksContext` in `src/context/BooksContext.tsx`, wrapped the root component with `BooksProvider`, updated `App.tsx`, `BookGrid.tsx`, and `BookCard.tsx` to utilize the `useBooks` custom hook, and verified the build.
+> Established `BooksContext` in `src/context/BooksContext.tsx`, wrapped the root component with `BooksProvider`, updated `App.tsx`, `BookGrid.tsx` and `BookCard.tsx` to utilize the `useBooks` custom hook and verified the build.
 
 ### Manual Improvements & Refactoring
 * **Architectural Decoupling:** Successfully isolated state management logic from UI components, resulting in cleaner, maintainable component trees and zero prop-drilling overhead.
+
+---
+
+### Deployment Log - Vercel Integration
+* **Date:** August 2026
+* **Action:** Deployed the React and TypeScript virtual bookshelf web application ("book-shelf") to Vercel.
+* **Configuration:** Utilized standard Vite build settings (`npm run build`, output directory `dist`) with public Open Library API integration.
+* **Result:** Successfully generated live production deployment URL.
