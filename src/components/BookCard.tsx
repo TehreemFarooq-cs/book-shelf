@@ -2,6 +2,7 @@ import type { Book, ReadingStatus } from '../types';
 
 interface BookCardProps {
   book: Book;
+  activeTab: 'home' | 'my-books';
   onToggleSave: (book: Book) => void;
   onUpdateStatus?: (id: string, status: ReadingStatus) => void;
   onUpdatePages?: (id: string, pagesRead: number) => void;
@@ -9,6 +10,7 @@ interface BookCardProps {
 
 export const BookCard = ({
   book,
+  activeTab,
   onToggleSave,
   onUpdateStatus,
   onUpdatePages,
@@ -22,7 +24,7 @@ export const BookCard = ({
   );
 
   return (
-    <div className={`book-card ${isSaved ? 'saved' : ''}`}>
+    <div className={`book-card ${isSaved && activeTab === 'my-books' ? 'saved' : ''}`}>
       <div className="card-top-bar">
         <div className="card-header-badge">
           <div className="badge-icon">📖</div>
@@ -42,7 +44,8 @@ export const BookCard = ({
       <h3>{book.title}</h3>
       <p>{book.author} {book.year > 0 ? `(${book.year})` : ''}</p>
 
-      {isSaved ? (
+      {/* Render status controls and progress tracking ONLY on the My Books tab */}
+      {isSaved && activeTab === 'my-books' && (
         <div className="card-status-container">
           <label htmlFor={`status-select-${book.id}`} className="status-label">
             Reading Status:
@@ -90,16 +93,6 @@ export const BookCard = ({
             onClick={() => onToggleSave(book)}
           >
             Remove from Shelf
-          </button>
-        </div>
-      ) : (
-        <div className="card-footer-actions">
-          <button
-            type="button"
-            className="book-action-btn add"
-            onClick={() => onToggleSave(book)}
-          >
-            + Add to My Books
           </button>
         </div>
       )}

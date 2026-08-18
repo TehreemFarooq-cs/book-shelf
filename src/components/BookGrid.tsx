@@ -44,6 +44,7 @@ export const BookGrid = ({
         <BookCard
           key={book.id}
           book={book}
+          activeTab={activeTab}
           onToggleSave={onToggleSave}
           onUpdateStatus={onUpdateStatus}
           onUpdatePages={onUpdatePages}
