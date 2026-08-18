@@ -4,6 +4,17 @@ Documented history of AI generation prompts, generated outcomes, and manual code
 
 ---
 
+# 🤖 AI Assistance Overview
+
+This document provides a detailed log of AI-generated prompts, iterative development steps and manual code improvements. Throughout the development lifecycle of the BookShelf application, AI tools were systematically leveraged to accelerate delivery and maintain clean, scalable software architecture.
+
+### How AI Assistance Was Utilized:
+* **Rapid Feature Scaffolding & Boilerplate:** Accelerated development by quickly generating initial component structures, service layers, and styling layouts.
+* **API Integration & Error Traceability:** Assisted in configuring external API calls, managing payload limits, setting up network request abort timeouts, and refining error handling patterns (such as attaching native error causes).
+* **Architectural Recommendations & Refactoring:** Identified component complexity and anti-patterns (such as prop drilling and "God components"), proposing and implementing state centralization through custom React Context (`BooksContext`).
+
+---
+
 ## Prompt 1: UI Scaffolding
 
 Initialize a clean baseline layout for a virtual bookshelf application using functional components in React and TypeScript. 
