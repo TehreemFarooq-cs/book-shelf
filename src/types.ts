@@ -1,12 +1,15 @@
+export type ReadingStatus = 'want-to-read' | 'currently-reading' | 'finished';
+
 export interface Book {
   id: string;
   title: string;
   author: string;
   year: number;
-  status: 'read' | 'unread';
-  cover_i?: number;
-  subject?: string[];
-  coverUrl?: string;
+  coverUrl: string;
+  status?: 'read' | 'unread';
+  readingStatus?: ReadingStatus;
+  pagesRead?: number;
+  totalPages?: number;
 }
 
 export interface OpenLibraryDoc {

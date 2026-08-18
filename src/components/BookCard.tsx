@@ -1,12 +1,25 @@
-import type { Book } from '../types';
+import type { Book, ReadingStatus } from '../types';
 
 interface BookCardProps {
   book: Book;
   onToggleSave: (book: Book) => void;
+  onUpdateStatus?: (id: string, status: ReadingStatus) => void;
+  onUpdatePages?: (id: string, pagesRead: number) => void;
 }
 
-export const BookCard = ({ book, onToggleSave }: BookCardProps) => {
-  const isSaved = book.status === 'read';
+export const BookCard = ({
+  book,
+  onToggleSave,
+  onUpdateStatus,
+  onUpdatePages,
+}: BookCardProps) => {
+  const isSaved = Boolean(book.readingStatus);
+  const totalPages = book.totalPages || 300;
+  const pagesRead = book.pagesRead || 0;
+  const progressPercent = Math.min(
+    100,
+    Math.round((pagesRead / totalPages) * 100)
+  );
 
   return (
     <div className={`book-card ${isSaved ? 'saved' : ''}`}>
@@ -29,15 +42,67 @@ export const BookCard = ({ book, onToggleSave }: BookCardProps) => {
       <h3>{book.title}</h3>
       <p>{book.author} {book.year > 0 ? `(${book.year})` : ''}</p>
 
-      <div className="card-footer-actions">
-        <button
-          type="button"
-          className={`book-action-btn ${isSaved ? 'remove' : 'add'}`}
-          onClick={() => onToggleSave(book)}
-        >
-          {isSaved ? 'Remove from Shelf' : '+ Add to My Books'}
-        </button>
-      </div>
+      {isSaved ? (
+        <div className="card-status-container">
+          <label htmlFor={`status-select-${book.id}`} className="status-label">
+            Reading Status:
+          </label>
+          <select
+            id={`status-select-${book.id}`}
+            className="status-dropdown"
+            value={book.readingStatus}
+            onChange={(e) =>
+              onUpdateStatus?.(book.id, e.target.value as ReadingStatus)
+            }
+          >
+            <option value="want-to-read">Want to Read</option>
+            <option value="currently-reading">Currently Reading</option>
+            <option value="finished">Finished</option>
+          </select>
+
+          {book.readingStatus === 'currently-reading' && (
+            <div className="progress-section">
+              <div className="progress-bar-container">
+                <div
+                  className="progress-bar-fill"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+              <div className="progress-controls">
+                <input
+                  type="number"
+                  min={0}
+                  max={totalPages}
+                  value={pagesRead}
+                  onChange={(e) =>
+                    onUpdatePages?.(book.id, Number(e.target.value))
+                  }
+                  className="pages-input"
+                />
+                <span className="pages-total">/ {totalPages} pages ({progressPercent}%)</span>
+              </div>
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="book-action-btn remove"
+            onClick={() => onToggleSave(book)}
+          >
+            Remove from Shelf
+          </button>
+        </div>
+      ) : (
+        <div className="card-footer-actions">
+          <button
+            type="button"
+            className="book-action-btn add"
+            onClick={() => onToggleSave(book)}
+          >
+            + Add to My Books
+          </button>
+        </div>
+      )}
     </div>
   );
 };
