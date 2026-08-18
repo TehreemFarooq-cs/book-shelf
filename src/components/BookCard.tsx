@@ -1,22 +1,18 @@
 import type { Book, ReadingStatus } from '../types';
+import { useBooks } from '../context/BooksContext';
 
 interface BookCardProps {
   book: Book;
   activeTab: 'home' | 'my-books';
-  onToggleSave: (book: Book) => void;
-  onUpdateStatus?: (id: string, status: ReadingStatus) => void;
-  onUpdatePages?: (id: string, pagesRead: number) => void;
   onOpenNotes?: (book: Book) => void;
 }
 
 export const BookCard = ({
   book,
   activeTab,
-  onToggleSave,
-  onUpdateStatus,
-  onUpdatePages,
   onOpenNotes,
 }: BookCardProps) => {
+  const { toggleSave, updateStatus, updatePages } = useBooks();
   const isSaved = Boolean(book.readingStatus);
   const totalPages = book.totalPages || 300;
   const pagesRead = book.pagesRead || 0;
@@ -47,7 +43,7 @@ export const BookCard = ({
           <button
             type="button"
             className={`bookmark-btn ${isSaved ? 'active' : ''}`}
-            onClick={() => onToggleSave(book)}
+            onClick={() => toggleSave(book)}
             title={isSaved ? 'Remove from shelf' : 'Save to shelf'}
           >
             {isSaved ? '★ Saved' : '☆ Save'}
@@ -70,7 +66,7 @@ export const BookCard = ({
             className="status-dropdown"
             value={book.readingStatus}
             onChange={(e) =>
-              onUpdateStatus?.(book.id, e.target.value as ReadingStatus)
+              updateStatus(book.id, e.target.value as ReadingStatus)
             }
           >
             <option value="want-to-read">Want to Read</option>
@@ -93,7 +89,7 @@ export const BookCard = ({
                   max={totalPages}
                   value={pagesRead}
                   onChange={(e) =>
-                    onUpdatePages?.(book.id, Number(e.target.value))
+                    updatePages(book.id, Number(e.target.value))
                   }
                   className="pages-input"
                 />
@@ -112,7 +108,7 @@ export const BookCard = ({
           <button
             type="button"
             className="book-action-btn remove"
-            onClick={() => onToggleSave(book)}
+            onClick={() => toggleSave(book)}
           >
             Remove from Shelf
           </button>

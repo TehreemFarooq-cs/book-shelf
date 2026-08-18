@@ -13,7 +13,8 @@ export async function searchBooks(query: string): Promise<Book[]> {
   } catch (error) {
     console.error('Error searching books:', error);
     throw new Error(
-      'An error occurred while searching for books. Please try again later.'
+      'An error occurred while searching for books. Please try again later.',
+      { cause: error }
     );
   }
 }

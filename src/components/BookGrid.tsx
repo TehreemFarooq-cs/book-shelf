@@ -1,4 +1,4 @@
-import type { Book, ReadingStatus } from '../types';
+import type { Book } from '../types';
 import { BookCard } from './BookCard';
 
 interface BookGridProps {
@@ -6,9 +6,6 @@ interface BookGridProps {
   loading: boolean;
   error: string | null;
   activeTab: 'home' | 'my-books';
-  onToggleSave: (book: Book) => void;
-  onUpdateStatus?: (id: string, status: ReadingStatus) => void;
-  onUpdatePages?: (id: string, pagesRead: number) => void;
   onOpenNotes?: (book: Book) => void;
 }
 
@@ -17,9 +14,6 @@ export const BookGrid = ({
   loading,
   error,
   activeTab,
-  onToggleSave,
-  onUpdateStatus,
-  onUpdatePages,
   onOpenNotes,
 }: BookGridProps) => {
   if (loading) {
@@ -47,9 +41,6 @@ export const BookGrid = ({
           key={book.id}
           book={book}
           activeTab={activeTab}
-          onToggleSave={onToggleSave}
-          onUpdateStatus={onUpdateStatus}
-          onUpdatePages={onUpdatePages}
           onOpenNotes={onOpenNotes}
         />
       ))}

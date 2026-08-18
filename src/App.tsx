@@ -1,19 +1,16 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import './components/Components.css';
 import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
 import { BookGrid } from './components/BookGrid';
 import { searchBooks } from './services/openLibrary';
-import type { Book, ReadingStatus } from './types';
+import type { Book } from './types';
+import { useBooks } from './context/BooksContext';
 
 function App() {
+  const { savedBooks, updateNotes } = useBooks();
+
   const [searchResults, setSearchResults] = useState<Book[]>([]);
-
-  const [savedBooks, setSavedBooks] = useState<Book[]>(() => {
-    const localData = localStorage.getItem('bookshelf_saved');
-    return localData ? JSON.parse(localData) : [];
-  });
-
   const [activeTab, setActiveTab] = useState<'home' | 'my-books'>('home');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,10 +22,6 @@ function App() {
   // Modal notes state
   const [modalBook, setModalBook] = useState<Book | null>(null);
   const [noteText, setNoteText] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('bookshelf_saved', JSON.stringify(savedBooks));
-  }, [savedBooks]);
 
   // Filter and sort logic for My Books
   const processedSavedBooks = useMemo(() => {
@@ -80,39 +73,6 @@ function App() {
     setError(null);
   };
 
-  const handleToggleSave = (bookToToggle: Book) => {
-    const isSaved = savedBooks.some((b) => b.id === bookToToggle.id);
-
-    if (isSaved) {
-      setSavedBooks((prev) => prev.filter((b) => b.id !== bookToToggle.id));
-    } else {
-      const defaultSavedBook: Book = {
-        ...bookToToggle,
-        readingStatus: 'want-to-read',
-        pagesRead: 0,
-        totalPages: bookToToggle.totalPages || 300,
-        notes: '',
-      };
-      setSavedBooks((prev) => [...prev, defaultSavedBook]);
-    }
-  };
-
-  const handleUpdateStatus = (id: string, status: ReadingStatus) => {
-    setSavedBooks((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, readingStatus: status } : b))
-    );
-  };
-
-  const handleUpdatePages = (id: string, pagesRead: number) => {
-    setSavedBooks((prev) =>
-      prev.map((b) => {
-        if (b.id !== id) return b;
-        const validPages = Math.min(Math.max(0, pagesRead), b.totalPages || 300);
-        return { ...b, pagesRead: validPages };
-      })
-    );
-  };
-
   const handleOpenNotes = (book: Book) => {
     setModalBook(book);
     setNoteText(book.notes || '');
@@ -120,9 +80,7 @@ function App() {
 
   const handleSaveNotes = () => {
     if (!modalBook) return;
-    setSavedBooks((prev) =>
-      prev.map((b) => (b.id === modalBook.id ? { ...b, notes: noteText } : b))
-    );
+    updateNotes(modalBook.id, noteText);
     setModalBook(null);
   };
 
@@ -219,9 +177,6 @@ function App() {
           loading={activeTab === 'home' ? loading : false}
           error={activeTab === 'home' ? error : null}
           activeTab={activeTab}
-          onToggleSave={handleToggleSave}
-          onUpdateStatus={handleUpdateStatus}
-          onUpdatePages={handleUpdatePages}
           onOpenNotes={handleOpenNotes}
         />
       </main>
