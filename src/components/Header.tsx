@@ -1,9 +1,11 @@
 export const Header = () => (
   <header className="app-header">
-    <h1>BookShelf</h1>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/my-books">My Books</a>
-    </nav>
+    <div className="header-container">
+      <h1>BookShelf</h1>
+      <nav>
+        <a href="#home" className="nav-btn nav-btn-outline">Home</a>
+        <a href="#my-books" className="nav-btn nav-btn-primary">My Books</a>
+      </nav>
+    </div>
   </header>
 );

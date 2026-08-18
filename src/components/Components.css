@@ -1,34 +1,270 @@
+/* Header - Sticky & Distinct Top Navigation */
 .app-header {
-  padding: 1rem;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px); /* Modern blurred glass effect */
   border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 1.25rem 0;
+}
+
+.header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.search-bar {
-  padding: 1rem;
-  display: flex;
-  gap: 0.5rem;
+.app-header h1 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
 }
 
+.app-header nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-header nav a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: color 0.15s ease;
+}
+
+.app-header nav a:hover {
+  color: var(--text-main);
+}
+
+.nav-btn {
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-pill);
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Outlined Style (like 'Sign in') */
+.nav-btn-outline {
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  background-color: transparent;
+}
+
+.nav-btn-outline:hover {
+  background-color: #ffffff;
+  border-color: var(--text-main);
+}
+
+/* Primary Green Style (like 'Join the waitlist') */
+.nav-btn-primary {
+  color: #0d1117;
+  background-color: var(--accent-green);
+  border: 1px solid transparent;
+}
+
+.nav-btn-primary:hover {
+  background-color: var(--accent-green-hover);
+  transform: translateY(-1px);
+}
+/* Hero Section / Layout Container */
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem 2rem;
+}
+
+/* Category Pill */
+.hero-tag {
+  display: inline-block;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+/* Large Bold Headline */
+.hero-headline {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--text-main);
+  margin: 0 0 2rem 0;
+  max-width: 800px;
+}
+
+/* Search Bar styled like the top green pill action button */
+.search-bar {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 560px;
+  margin-bottom: 3.5rem;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  outline: none;
+  background: #ffffff;
+  color: var(--text-main);
+  transition: border-color 0.15s ease;
+}
+
+.search-bar input:focus {
+  border-color: var(--text-main);
+}
+
+.search-bar button[type="submit"] {
+  padding: 0.85rem 1.75rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  background-color: var(--accent-green);
+  color: #0d1117;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.search-bar button[type="submit"]:hover {
+  background-color: var(--accent-green-hover);
+}
+
+.search-bar button[type="button"] {
+  padding: 0.85rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+/* Book Grid */
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
 }
 
+/* Card Styling with Rounded Corners and Dark Header Badges */
 .book-card {
+  background-color: var(--bg-card);
   border: 1px solid var(--border);
-  padding: 1rem;
+  border-radius: var(--radius-card);
+  padding: 1.75rem 1.5rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(13, 17, 23, 0.3);
+}
+
+.card-header-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.badge-icon {
+  width: 28px;
+  height: 28px;
+  background-color: var(--dark-badge);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.badge-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.book-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
   border-radius: 8px;
+  margin-bottom: 1.25rem;
+  background-color: #f3f4f6;
+  padding: 0.5rem;
+}
+
+.book-card h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-main);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.book-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0 0 1.5rem 0;
 }
 
 .badge {
+  margin-top: auto;
   display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  background: var(--accent-bg);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.badge.read {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge.unread {
+  background: #f1f5f9;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
 }

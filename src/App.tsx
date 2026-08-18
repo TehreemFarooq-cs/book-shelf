@@ -35,6 +35,8 @@ function App() {
     <>
       <Header />
       <main>
+        <span className="hero-tag">THE LIBRARY</span>
+        <h2 className="hero-headline">Every book you need.<br />One simple shelf.</h2>
         <SearchBar onSearch={handleSearch} onClear={handleClear} />
         <BookGrid books={books} loading={loading} error={error} />
       </main>
