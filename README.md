@@ -20,12 +20,15 @@ A responsive web application built with React, TypeScript and Vite that allows u
 
 ## 📁 Project Structure
 
+## 📁 Project Structure
+
 ```text
 src/
 ├── components/       # Reusable presentational UI components (BookCard, BookGrid, SearchBar, Header)
+├── context/          # Global application state management (BooksContext.tsx)
 ├── services/         # API integration layer and transformation utilities (openLibrary.ts)
 ├── types.ts          # Centralized TypeScript interfaces
-├── App.tsx           # Primary state management and view container
+├── App.tsx           # Primary view container
 └── main.tsx          # Application entry point
 ```
 
